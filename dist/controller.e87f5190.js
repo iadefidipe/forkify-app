@@ -8160,35 +8160,37 @@ var renderSpinner = function renderSpinner(parentEl) {
 
 var showRecipe = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var response, data, recipe, markup;
+    var id, response, data, recipe, markup;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             //success
+            id = window.location.hash.slice(1); //? window.location refers to the whole url, this how you get the hash
             // TODO render spinner
+
             renderSpinner(recipeContainer); // TODO 1) loading recipe
 
-            _context.next = 4;
-            return fetch('https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc886');
+            _context.next = 5;
+            return fetch("https://forkify-api.herokuapp.com/api/v2/recipes/".concat(id));
 
-          case 4:
+          case 5:
             response = _context.sent;
-            _context.next = 7;
+            _context.next = 8;
             return response.json();
 
-          case 7:
+          case 8:
             data = _context.sent;
 
             if (response.ok) {
-              _context.next = 10;
+              _context.next = 11;
               break;
             }
 
             throw new Error("".concat(data.message, " (").concat(response.status, ")"));
 
-          case 10:
+          case 11:
             //catching error in the fetch
             recipe = data.data.recipe;
             recipe = {
@@ -8201,8 +8203,8 @@ var showRecipe = /*#__PURE__*/function () {
               cookingTime: recipe.cooking_time,
               ingredients: recipe.ingredients
             }; //formatting recipe object keys
-
-            console.log(recipe); // TODO 2) rendering recipe
+            // console.log(recipe);
+            // TODO 2) rendering recipe
 
             markup = "\n    <figure class=\"recipe__fig\">\n          <img src=\"".concat(recipe.image, "\" alt=\"").concat(recipe.title, "\" class=\"recipe__img\" />\n          <h1 class=\"recipe__title\">\n            <span>").concat(recipe.title, "</span>\n          </h1>\n        </figure>\n\n        <div class=\"recipe__details\">\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(recipe.cookingTime, "</span>\n            <span class=\"recipe__info-text\">minutes</span>\n          </div>\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-users\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--people\">").concat(recipe.servings, "</span>\n            <span class=\"recipe__info-text\">servings</span>\n\n            <div class=\"recipe__info-buttons\">\n              <button class=\"btn--tiny btn--increase-servings\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                </svg>\n              </button>\n              <button class=\"btn--tiny btn--increase-servings\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                </svg>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"recipe__user-generated\">\n            <svg>\n              <use href=\"").concat(_icons.default, "#icon-user\"></use>\n            </svg>\n          </div>\n          <button class=\"btn--round\">\n            <svg class=\"\">\n              <use href=\"").concat(_icons.default, "#icon-bookmark-fill\"></use>\n            </svg>\n          </button>\n        </div>\n\n        <div class=\"recipe__ingredients\">\n          <h2 class=\"heading--2\">Recipe ingredients</h2>\n          <ul class=\"recipe__ingredient-list\">\n          ").concat(recipe.ingredients.map(function (ing) {
               return "\n              <li class=\"recipe__ingredient\">\n              <svg class=\"recipe__icon\">\n                <use href=\"".concat(_icons.default, "#icon-check\"></use>\n              </svg>\n              <div class=\"recipe__quantity\">").concat(ing.quantity, "</div>\n              <div class=\"recipe__description\">\n                <span class=\"recipe__unit\">").concat(ing.unit, "</span>\n                ").concat(ing.description, "\n              </div>\n            </li>\n            ");
@@ -8234,6 +8236,10 @@ var showRecipe = /*#__PURE__*/function () {
 }();
 
 showRecipe();
+['hashchange', 'load'].forEach(function (event) {
+  return window.addEventListener(event, showRecipe);
+}); // to do eventlisteners for the same event
+// window.addEventListener('hashchange', showRecipe) //listening for hash change event
 },{"babel-polyfill":"node_modules/babel-polyfill/lib/index.js","../img/icons.svg":"src/img/icons.svg"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -8262,7 +8268,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54889" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49751" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
