@@ -1,5 +1,6 @@
 const recipeContainer = document.querySelector('.recipe');
 
+// This is promisifyin a setTimeout callback function
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
