@@ -8126,7 +8126,7 @@ define(String.prototype, "padRight", "".padEnd);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TIMEOUT_SEC = exports.API_URL = void 0;
+exports.RES_PER_PAGE = exports.TIMEOUT_SEC = exports.API_URL = void 0;
 
 require("babel-polyfill");
 
@@ -8136,6 +8136,8 @@ var API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
 exports.API_URL = API_URL;
 var TIMEOUT_SEC = 10;
 exports.TIMEOUT_SEC = TIMEOUT_SEC;
+var RES_PER_PAGE = 10;
+exports.RES_PER_PAGE = RES_PER_PAGE;
 },{"babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"src/js/helper.js":[function(require,module,exports) {
 "use strict";
 
@@ -8971,7 +8973,7 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
+exports.getSearchResultsPage = exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
 
 var _config = require("./config");
 
@@ -8989,7 +8991,9 @@ var state = {
   recipe: {},
   search: {
     query: '',
-    results: []
+    results: [],
+    resultsPerPage: _config.RES_PER_PAGE,
+    page: 1
   }
 };
 exports.state = state;
@@ -9087,10 +9091,19 @@ var loadSearchResults = /*#__PURE__*/function () {
   return function loadSearchResults(_x2) {
     return _ref2.apply(this, arguments);
   };
-}(); // loadSearchResults('pizza');
-
+}();
 
 exports.loadSearchResults = loadSearchResults;
+
+var getSearchResultsPage = function getSearchResultsPage() {
+  var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.page;
+  state.search.page = page;
+  var start = (page - 1) * state.search.resultsPerPage;
+  var end = page * state.search.resultsPerPage;
+  return state.search.results.slice(start, end);
+};
+
+exports.getSearchResultsPage = getSearchResultsPage;
 },{"./config":"src/js/config.js","./helper":"src/js/helper.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","regenerator-runtime":"node_modules/regenerator-runtime/runtime.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"src/js/views/view.js":[function(require,module,exports) {
@@ -21970,14 +21983,13 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-if (module.hot) {
-  module.hot.accept();
-} // https://forkify-api.herokuapp.com/v2
+// if (module.hot){
+//   module.hot.accept();
+// }
+// https://forkify-api.herokuapp.com/v2
 ///////////////////////////////////////
 // creating a generic function for the spinner
 // creating an async function that will fetch our recipe the API
-
-
 var controlRecipies = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var id, recipe;
@@ -22060,7 +22072,8 @@ var controlSearch = /*#__PURE__*/function () {
 
           case 7:
             // 30 render results
-            _resultView.default.render(model.state.search.results);
+            // resultView.render(model.state.search.results)
+            _resultView.default.render(model.getSearchResultsPage());
 
             _context2.next = 13;
             break;
@@ -22120,7 +22133,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58431" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61281" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

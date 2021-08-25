@@ -8,9 +8,9 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import icons from '../img/icons.svg';
 
-if (module.hot){
-  module.hot.accept();
-}
+// if (module.hot){
+//   module.hot.accept();
+// }
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -56,7 +56,9 @@ const controlSearch = async function () {
 
     // 30 render results
 
-    resultView.render(model.state.search.results)
+    // resultView.render(model.state.search.results)
+    resultView.render(model.getSearchResultsPage())
+
   }
   catch(err){
     resultView.renderError();
