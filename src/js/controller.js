@@ -1,5 +1,6 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
+import searchView from './views/searchView.js';
 
 import 'babel-polyfill';
 import 'core-js/stable';
@@ -38,8 +39,28 @@ const controlRecipies = async function () {
   }
 };
 
+const controlSearch = async function () {
+  try{
+
+    // 1) get search query
+    const query = searchView.getQuery();
+    if (!query) return;
+
+    // 2) load search resaults
+    await model.loadSearchResults(query)
+
+    // 
+    console.log(model.state.search.results)
+  }
+  catch(err){
+    console.log(err)
+  }
+}
+
+
 const init = function () {
-  recipeView.addHandelerRender(controlRecipies);
+  recipeView.addHandlerRender(controlRecipies);
+  searchView.addHandlerSearch(controlSearch);
 };
 
 init();

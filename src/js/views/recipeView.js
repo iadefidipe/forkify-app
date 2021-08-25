@@ -60,7 +60,7 @@ class RecipeView {
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
-  addHandelerRender(handler){
+  addHandlerRender(handler){
     ['hashchange', 'load'].forEach(event =>
       window.addEventListener(event, handler)
     ); // to do eventlisteners for the same event
@@ -168,6 +168,23 @@ class RecipeView {
         ${ing.description}
       </div>
     </li>
+    `
+  }
+
+  #generateSearchMarkup(){
+    const markup = `
+    <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="src/img/icons.svg#icon-arrow-left"></use>
+            </svg>
+            <span>Page 1</span>
+          </button>
+          <button class="btn--inline pagination__btn--next">
+            <span>Page 3</span>
+            <svg class="search__icon">
+              <use href="src/img/icons.svg#icon-arrow-right"></use>
+            </svg>
+          </button>
     `
   }
 }

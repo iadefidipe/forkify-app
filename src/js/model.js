@@ -3,17 +3,23 @@ import {getJSON} from './helper'
 
 
 import 'babel-polyfill';
+import { async } from 'regenerator-runtime';
 
 
 export const state = {
-    recipe: {}
+    recipe: {},
+    search: {
+        query:'',
+        results:[]
+    }
 }
 
 
 export const loadRecipe = async function (id) {
     try{
 
-        const data = await getJSON(`${API_URL}/${id}`);
+        
+        const data = await getJSON(`${API_URL}${id}`);
       
           const  { recipe } = data.data;
           state. recipe = {
@@ -27,7 +33,7 @@ export const loadRecipe = async function (id) {
             ingredients: recipe.ingredients,
           }; //formatting recipe object keys
     
-          console.log(state.recipe)
+        console.log(state.recipe);
 
     }
 
@@ -38,3 +44,26 @@ export const loadRecipe = async function (id) {
     }
     
 }
+
+export const loadSearchResults = async function (query){
+    try{
+
+        state.search.query = query;
+        const data = await getJSON (`${API_URL}?search=${query}`)
+        console.log(data)
+        state.search.results = data.data.recipes.map(recipe =>  {
+            return {
+                id: recipe.id,
+            title: recipe.title,
+            publisher: recipe.publisher,
+            image: recipe.image_url}
+           
+          })
+    }
+    catch (err){
+        throw err;
+
+    }
+}
+
+// loadSearchResults('pizza');
