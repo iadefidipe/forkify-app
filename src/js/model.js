@@ -1,4 +1,6 @@
 import {API_URL} from './config'
+import {getJSON} from './helper'
+
 
 import 'babel-polyfill';
 
@@ -11,12 +13,7 @@ export const state = {
 export const loadRecipe = async function (id) {
     try{
 
-        const response = await fetch(
-            `${API_URL}/${id}`
-          ); //* making an ajax call to the API
-          const data = await response.json();
-      
-          if (!response.ok) throw new Error(`${data.message} (${response.status})`); //catching error in the fetch
+        const data = await getJSON(`${API_URL}/${id}`);
       
           const  { recipe } = data.data;
           state. recipe = {
@@ -35,7 +32,8 @@ export const loadRecipe = async function (id) {
     }
 
     catch(err){
-        alert(err)
+        // tem
+        console.error(err)
     }
     
 }

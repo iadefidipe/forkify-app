@@ -117,18 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/js/config.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.API_URL = void 0;
-// this file will contain all the varibles which should be constant and reused through out this project
-// so if want to change some configurations we do it using the config
-var API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes';
-exports.API_URL = API_URL;
-},{}],"node_modules/babel-polyfill/node_modules/core-js/modules/_global.js":[function(require,module,exports) {
+})({"node_modules/babel-polyfill/node_modules/core-js/modules/_global.js":[function(require,module,exports) {
 
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
@@ -8131,37 +8120,56 @@ define(String.prototype, "padRight", "".padEnd);
 "pop,reverse,shift,keys,values,entries,indexOf,every,some,forEach,map,filter,find,findIndex,includes,join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill".split(",").forEach(function (key) {
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
-},{"core-js/shim":"node_modules/babel-polyfill/node_modules/core-js/shim.js","regenerator-runtime/runtime":"node_modules/babel-polyfill/node_modules/regenerator-runtime/runtime.js","core-js/fn/regexp/escape":"node_modules/babel-polyfill/node_modules/core-js/fn/regexp/escape.js"}],"src/js/model.js":[function(require,module,exports) {
+},{"core-js/shim":"node_modules/babel-polyfill/node_modules/core-js/shim.js","regenerator-runtime/runtime":"node_modules/babel-polyfill/node_modules/regenerator-runtime/runtime.js","core-js/fn/regexp/escape":"node_modules/babel-polyfill/node_modules/core-js/fn/regexp/escape.js"}],"src/js/config.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadRecipe = exports.state = void 0;
-
-var _config = require("./config");
+exports.TIMEOUT_SEC = exports.API_URL = void 0;
 
 require("babel-polyfill");
+
+// this file will contain all the varibles which should be constant and reused through out this project
+// so if want to change some configurations we do it using the config
+var API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes';
+exports.API_URL = API_URL;
+var TIMEOUT_SEC = 10;
+exports.TIMEOUT_SEC = TIMEOUT_SEC;
+},{"babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"src/js/helper.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getJSON = void 0;
+
+require("babel-polyfill");
+
+var _config = require("./config");
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var state = {
-  recipe: {}
+var timeout = function timeout(s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error("Request took too long! Timeout after ".concat(s, " second")));
+    }, s * 1000);
+  });
 };
-exports.state = state;
 
-var loadRecipe = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
-    var response, data, recipe;
+var getJSON = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(url) {
+    var response, data;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return fetch("".concat(_config.API_URL, "/").concat(id));
+            return Promise.race([fetch(url), timeout(_config.TIMEOUT_SEC)]);
 
           case 3:
             response = _context.sent;
@@ -8179,7 +8187,63 @@ var loadRecipe = /*#__PURE__*/function () {
             throw new Error("".concat(data.message, " (").concat(response.status, ")"));
 
           case 9:
-            //catching error in the fetch
+            return _context.abrupt("return", data);
+
+          case 12:
+            _context.prev = 12;
+            _context.t0 = _context["catch"](0);
+            throw _context.t0;
+
+          case 15:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 12]]);
+  }));
+
+  return function getJSON(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+exports.getJSON = getJSON;
+},{"babel-polyfill":"node_modules/babel-polyfill/lib/index.js","./config":"src/js/config.js"}],"src/js/model.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadRecipe = exports.state = void 0;
+
+var _config = require("./config");
+
+var _helper = require("./helper");
+
+require("babel-polyfill");
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var state = {
+  recipe: {}
+};
+exports.state = state;
+
+var loadRecipe = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
+    var data, recipe;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return (0, _helper.getJSON)("".concat(_config.API_URL, "/").concat(id));
+
+          case 3:
+            data = _context.sent;
             recipe = data.data.recipe;
             state.recipe = {
               id: recipe.id,
@@ -8193,20 +8257,21 @@ var loadRecipe = /*#__PURE__*/function () {
             }; //formatting recipe object keys
 
             console.log(state.recipe);
-            _context.next = 17;
+            _context.next = 12;
             break;
 
-          case 14:
-            _context.prev = 14;
+          case 9:
+            _context.prev = 9;
             _context.t0 = _context["catch"](0);
-            alert(_context.t0);
+            // tem
+            console.error(_context.t0);
 
-          case 17:
+          case 12:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 14]]);
+    }, _callee, null, [[0, 9]]);
   }));
 
   return function loadRecipe(_x) {
@@ -8215,7 +8280,7 @@ var loadRecipe = /*#__PURE__*/function () {
 }();
 
 exports.loadRecipe = loadRecipe;
-},{"./config":"src/js/config.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"src/img/icons.svg":[function(require,module,exports) {
+},{"./config":"src/js/config.js","./helper":"src/js/helper.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"node_modules/fractional/index.js":[function(require,module,exports) {
 /*
@@ -21642,19 +21707,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 // const recipeContainer = document.querySelector('.recipe');
-// This is promisifyin a setTimeout callback function
-var timeout = function timeout(s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error("Request took too long! Timeout after ".concat(s, " second")));
-    }, s * 1000);
-  });
-}; // https://forkify-api.herokuapp.com/v2
+// https://forkify-api.herokuapp.com/v2
 ///////////////////////////////////////
 // creating a generic function for the spinner
 // creating an async function that will fetch our recipe the API
-
-
 var controlRecipies = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var id, recipe;
@@ -21741,7 +21797,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61002" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55349" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
