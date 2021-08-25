@@ -42,10 +42,11 @@ const controlRecipies = async function () {
   }
 };
 
-controlRecipies();
+const init = function (){
+  recipeView.addHandelerRender(controlRecipies);
+}
 
-['hashchange', 'load'].forEach(event =>
-  window.addEventListener(event, controlRecipies)
-); // to do eventlisteners for the same event
+init()
 
+// recipeView.addHandelerRender(controlRecipies)
 // window.addEventListener('hashchange', controlRecipies) //listening for hash change event

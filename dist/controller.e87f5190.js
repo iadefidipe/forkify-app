@@ -8736,6 +8736,13 @@ var RecipeView = /*#__PURE__*/function () {
 
       _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
     }
+  }, {
+    key: "addHandelerRender",
+    value: function addHandelerRender(handler) {
+      ['hashchange', 'load'].forEach(function (event) {
+        return window.addEventListener(event, handler);
+      }); // to do eventlisteners for the same event
+    }
   }]);
 
   return RecipeView;
@@ -21764,10 +21771,11 @@ var controlRecipies = /*#__PURE__*/function () {
   };
 }();
 
-controlRecipies();
-['hashchange', 'load'].forEach(function (event) {
-  return window.addEventListener(event, controlRecipies);
-}); // to do eventlisteners for the same event
+var init = function init() {
+  _recipeView.default.addHandelerRender(controlRecipies);
+};
+
+init(); // recipeView.addHandelerRender(controlRecipies)
 // window.addEventListener('hashchange', controlRecipies) //listening for hash change event
 },{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","core-js/stable":"node_modules/core-js/stable/index.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","../img/icons.svg":"src/img/icons.svg"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
