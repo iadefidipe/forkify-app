@@ -8257,7 +8257,7 @@ var loadRecipe = /*#__PURE__*/function () {
             }; //formatting recipe object keys
 
             console.log(state.recipe);
-            _context.next = 12;
+            _context.next = 13;
             break;
 
           case 9:
@@ -8265,8 +8265,9 @@ var loadRecipe = /*#__PURE__*/function () {
             _context.t0 = _context["catch"](0);
             // tem
             console.error(_context.t0);
+            throw _context.t0;
 
-          case 12:
+          case 13:
           case "end":
             return _context.stop();
         }
@@ -8689,6 +8690,10 @@ var _parentElement = /*#__PURE__*/new WeakMap();
 
 var _data = /*#__PURE__*/new WeakMap();
 
+var _errorMessage = /*#__PURE__*/new WeakMap();
+
+var _message = /*#__PURE__*/new WeakMap();
+
 var _clear = /*#__PURE__*/new WeakSet();
 
 var _generateMarkup = /*#__PURE__*/new WeakSet();
@@ -8714,6 +8719,16 @@ var RecipeView = /*#__PURE__*/function () {
       writable: true,
       value: void 0
     });
+
+    _errorMessage.set(this, {
+      writable: true,
+      value: "We couldnt find the recipe, Please try banother recipe"
+    });
+
+    _message.set(this, {
+      writable: true,
+      value: void 0
+    });
   }
 
   _createClass(RecipeView, [{
@@ -8730,9 +8745,19 @@ var RecipeView = /*#__PURE__*/function () {
     }
   }, {
     key: "renderSpinner",
-    value: function renderSpinner() {
+    value: function renderSpinner(message) {
       var markup = "\n    <div class=\"spinner\">\n      <svg>\n        <use href=\"".concat(_icons.default, "#icon-loader\"></use>\n      </svg>\n    </div>\n    ");
       _classPrivateFieldGet(this, _parentElement).innerHTML = ''; //clearing parent html first
+
+      _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
+    }
+  }, {
+    key: "renderError",
+    value: function renderError() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _classPrivateFieldGet(this, _message);
+      var markup = "\n    <div class=\"error\">\n            <div>\n              <svg>\n                <use href=\"".concat(_icons.default, "#icon-smile\"></use>\n              </svg>\n            </div>\n            <p>").concat(message, "</p>\n          </div>\n    ");
+
+      _classPrivateMethodGet(this, _clear, _clear2).call(this);
 
       _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
     }
@@ -21755,8 +21780,10 @@ var controlRecipies = /*#__PURE__*/function () {
           case 11:
             _context.prev = 11;
             _context.t0 = _context["catch"](0);
+
             //error
-            alert(_context.t0);
+            // alert(err);
+            _recipeView.default.renderError();
 
           case 14:
           case "end":
@@ -21805,7 +21832,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55349" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55217" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

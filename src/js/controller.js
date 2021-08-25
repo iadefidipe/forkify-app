@@ -1,5 +1,5 @@
 import * as model from './model.js';
-import recipeView from './views/recipeView.js'
+import recipeView from './views/recipeView.js';
 
 import 'babel-polyfill';
 import 'core-js/stable';
@@ -8,14 +8,11 @@ import icons from '../img/icons.svg';
 
 // const recipeContainer = document.querySelector('.recipe');
 
-
-
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
 
 // creating a generic function for the spinner
-
 
 // creating an async function that will fetch our recipe the API
 const controlRecipies = async function () {
@@ -34,19 +31,18 @@ const controlRecipies = async function () {
 
     // TODO rendering recipe
     recipeView.render(model.state.recipe);
-
-    
   } catch (err) {
     //error
-    alert(err);
+    // alert(err);
+    recipeView.renderError();
   }
 };
 
-const init = function (){
+const init = function () {
   recipeView.addHandelerRender(controlRecipies);
-}
+};
 
-init()
+init();
 
 // recipeView.addHandelerRender(controlRecipies)
 // window.addEventListener('hashchange', controlRecipies) //listening for hash change event
