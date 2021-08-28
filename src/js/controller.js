@@ -2,6 +2,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultView from './views/resultView.js';
+import paginationView from './views/paginationView.js';
 
 import 'babel-polyfill';
 import 'core-js/stable';
@@ -57,7 +58,11 @@ const controlSearch = async function () {
     // 30 render results
 
     // resultView.render(model.state.search.results)
-    resultView.render(model.getSearchResultsPage())
+    resultView.render(model.getSearchResultsPage(3))
+
+    //render initial pagination buttons
+    paginationView.render(model.state.search);
+
 
   }
   catch(err){
@@ -65,10 +70,18 @@ const controlSearch = async function () {
   }
 }
 
+const controlPagination = function(goToPage){
+  // resultView.render(model.state.search.results)
+  resultView.render(model.getSearchResultsPage(goToPage))
+
+  //render initial pagination buttons
+  paginationView.render(model.state.search);
+}
 
 const init = function () {
   recipeView.addHandlerRender(controlRecipies);
   searchView.addHandlerSearch(controlSearch);
+  paginationView.addHandlerClick(controlPagination);
 };
 
 init();
