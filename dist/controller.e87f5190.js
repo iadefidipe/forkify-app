@@ -8973,7 +8973,7 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getSearchResultsPage = exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
+exports.updateServings = exports.getSearchResultsPage = exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
 
 var _config = require("./config");
 
@@ -9104,6 +9104,15 @@ var getSearchResultsPage = function getSearchResultsPage() {
 };
 
 exports.getSearchResultsPage = getSearchResultsPage;
+
+var updateServings = function updateServings(newServings) {
+  state.recipe.ingredients.forEach(function (ing) {
+    ing.quantity = ing.quantity * newServings / state.recipe.servings; // newQt = oldQt * newServings / oldServings
+  });
+  state.recipe.servings = newServings;
+};
+
+exports.updateServings = updateServings;
 },{"./config":"src/js/config.js","./helper":"src/js/helper.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","regenerator-runtime":"node_modules/regenerator-runtime/runtime.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"src/js/views/view.js":[function(require,module,exports) {
@@ -9633,9 +9642,19 @@ var RecipeView = /*#__PURE__*/function (_View) {
       }); // to do eventlisteners for the same event
     }
   }, {
+    key: "addHandlerUpdateServings",
+    value: function addHandlerUpdateServings(handler) {
+      this._parentElement.addEventListener('click', function (e) {
+        var btn = e.target.closest('.btn--update-servings');
+        if (!btn) return;
+        var updateTo = btn.dataset.updateTo;
+        if (+updateTo > 0) handler(+updateTo);
+      });
+    }
+  }, {
     key: "_generateMarkup",
     value: function _generateMarkup() {
-      return "\n        <figure class=\"recipe__fig\">\n              <img src=\"".concat(this._data.image, "\" alt=\"").concat(this._data.title, "\" class=\"recipe__img\" />\n              <h1 class=\"recipe__title\">\n                <span>").concat(this._data.title, "</span>\n              </h1>\n            </figure>\n    \n            <div class=\"recipe__details\">\n              <div class=\"recipe__info\">\n                <svg class=\"recipe__info-icon\">\n                  <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n                </svg>\n                <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(this._data.cookingTime, "</span>\n                <span class=\"recipe__info-text\">minutes</span>\n              </div>\n              <div class=\"recipe__info\">\n                <svg class=\"recipe__info-icon\">\n                  <use href=\"").concat(_icons.default, "#icon-users\"></use>\n                </svg>\n                <span class=\"recipe__info-data recipe__info-data--people\">").concat(this._data.servings, "</span>\n                <span class=\"recipe__info-text\">servings</span>\n    \n                <div class=\"recipe__info-buttons\">\n                  <button class=\"btn--tiny btn--increase-servings\">\n                    <svg>\n                      <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                    </svg>\n                  </button>\n                  <button class=\"btn--tiny btn--increase-servings\">\n                    <svg>\n                      <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                    </svg>\n                  </button>\n                </div>\n              </div>\n    \n              <div class=\"recipe__user-generated\">\n                \n              </div>\n              <button class=\"btn--round\">\n                <svg class=\"\">\n                  <use href=\"").concat(_icons.default, "#icon-bookmark-fill\"></use>\n                </svg>\n              </button>\n            </div>\n    \n            <div class=\"recipe__ingredients\">\n              <h2 class=\"heading--2\">Recipe ingredients</h2>\n              <ul class=\"recipe__ingredient-list\">\n              ").concat(this._data.ingredients.map(this._generateMarkupIngredient).join(''), "\n              </ul>\n            </div>\n    \n            <div class=\"recipe__directions\">\n              <h2 class=\"heading--2\">How to cook it</h2>\n              <p class=\"recipe__directions-text\">\n                This recipe was carefully designed and tested by\n                <span class=\"recipe__publisher\">").concat(this._data.publisher, "</span>. Please check out\n                directions at their website.\n              </p>\n              <a\n                class=\"btn--small recipe__btn\"\n                href=\"").concat(this._data.sourceUrl, "\"\n                target=\"_blank\"\n              >\n                <span>Directions</span>\n                <svg class=\"search__icon\">\n                  <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n                </svg>\n              </a>\n            </div>\n        ");
+      return "\n        <figure class=\"recipe__fig\">\n              <img src=\"".concat(this._data.image, "\" alt=\"").concat(this._data.title, "\" class=\"recipe__img\" />\n              <h1 class=\"recipe__title\">\n                <span>").concat(this._data.title, "</span>\n              </h1>\n            </figure>\n    \n            <div class=\"recipe__details\">\n              <div class=\"recipe__info\">\n                <svg class=\"recipe__info-icon\">\n                  <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n                </svg>\n                <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(this._data.cookingTime, "</span>\n                <span class=\"recipe__info-text\">minutes</span>\n              </div>\n              <div class=\"recipe__info\">\n                <svg class=\"recipe__info-icon\">\n                  <use href=\"").concat(_icons.default, "#icon-users\"></use>\n                </svg>\n                <span class=\"recipe__info-data recipe__info-data--people\">").concat(this._data.servings, "</span>\n                <span class=\"recipe__info-text\">servings</span>\n    \n                <div class=\"recipe__info-buttons\">\n                  <button class=\"btn--tiny btn--update-servings\" data-update-to = \"").concat(this._data.servings - 1, "\">\n                    <svg>\n                      <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                    </svg>\n                  </button>\n                  <button class=\"btn--tiny btn--update-servings\" data-update-to = \"").concat(this._data.servings + 1, "\">\n                    <svg>\n                      <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                    </svg>\n                  </button>\n                </div>\n              </div>\n    \n              <div class=\"recipe__user-generated\">\n                \n              </div>\n              <button class=\"btn--round\">\n                <svg class=\"\">\n                  <use href=\"").concat(_icons.default, "#icon-bookmark-fill\"></use>\n                </svg>\n              </button>\n            </div>\n    \n            <div class=\"recipe__ingredients\">\n              <h2 class=\"heading--2\">Recipe ingredients</h2>\n              <ul class=\"recipe__ingredient-list\">\n              ").concat(this._data.ingredients.map(this._generateMarkupIngredient).join(''), "\n              </ul>\n            </div>\n    \n            <div class=\"recipe__directions\">\n              <h2 class=\"heading--2\">How to cook it</h2>\n              <p class=\"recipe__directions-text\">\n                This recipe was carefully designed and tested by\n                <span class=\"recipe__publisher\">").concat(this._data.publisher, "</span>. Please check out\n                directions at their website.\n              </p>\n              <a\n                class=\"btn--small recipe__btn\"\n                href=\"").concat(this._data.sourceUrl, "\"\n                target=\"_blank\"\n              >\n                <span>Directions</span>\n                <svg class=\"search__icon\">\n                  <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n                </svg>\n              </a>\n            </div>\n        ");
     }
   }, {
     key: "_generateMarkupIngredient",
@@ -9784,6 +9803,107 @@ var ResultView = /*#__PURE__*/function (_View) {
 }(_view.default);
 
 var _default = new ResultView();
+
+exports.default = _default;
+},{"./view":"src/js/views/view.js","../../img/icons.svg":"src/img/icons.svg"}],"src/js/views/paginationView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _view = _interopRequireDefault(require("./view"));
+
+var _icons = _interopRequireDefault(require("../../img/icons.svg"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var PaginationView = /*#__PURE__*/function (_View) {
+  _inherits(PaginationView, _View);
+
+  var _super = _createSuper(PaginationView);
+
+  function PaginationView() {
+    var _this;
+
+    _classCallCheck(this, PaginationView);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "_parentElement", document.querySelector('.pagination'));
+
+    return _this;
+  }
+
+  _createClass(PaginationView, [{
+    key: "addHandlerClick",
+    value: function addHandlerClick(handler) {
+      this._parentElement.addEventListener('click', function (e) {
+        var btn = e.target.closest('.btn--inline');
+        if (!btn) return;
+        var goToPage = +btn.dataset.goto;
+        handler(goToPage);
+      });
+    }
+  }, {
+    key: "_generateMarkup",
+    value: function _generateMarkup() {
+      var currentPage = this._data.page;
+      var numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
+      console.log(numPages); // page 1 =, there are other pages
+
+      if (currentPage === 1 && numPages > 1) {
+        return "\n            <button data-goto=\"".concat(currentPage + 1, "\" class=\"btn--inline pagination__btn--next\">\n            <span>").concat(currentPage + 1, "</span>\n            <svg class=\"search__icon\">\n              <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n            </svg>\n          </button> \n            ");
+      } //last page
+
+
+      if (currentPage === numPages && numPages > 1) {
+        return "\n            <button data-goto=\"".concat(currentPage - 1, "\" class=\"btn--inline pagination__btn--prev\">\n                <svg class=\"search__icon\">\n                    <use href=\"").concat(_icons.default, "#icon-arrow-left\"></use>\n                </svg>\n                <span>").concat(currentPage - 1, "</span>\n            </button>\n            ");
+      } //other page
+
+
+      if (currentPage < numPages) {
+        return "\n            <button data-goto=\"".concat(currentPage + 1, "\" class=\"btn--inline pagination__btn--next\">\n            <span>Page ").concat(currentPage + 1, "</span>\n            <svg class=\"search__icon\">\n              <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n            </svg>\n          </button>\n          \n          <button data-goto=\"").concat(currentPage - 1, "\" class=\"btn--inline pagination__btn--prev\">\n                <svg class=\"search__icon\">\n                    <use href=\"").concat(_icons.default, "#icon-arrow-left\"></use>\n                </svg>\n                <span> Page ").concat(currentPage - 1, "</span>\n            </button>\n            ");
+      } // Page 1, and there is no other page
+
+
+      return '';
+    }
+  }]);
+
+  return PaginationView;
+}(_view.default);
+
+var _default = new PaginationView();
 
 exports.default = _default;
 },{"./view":"src/js/views/view.js","../../img/icons.svg":"src/img/icons.svg"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
@@ -21965,6 +22085,8 @@ var _searchView = _interopRequireDefault(require("./views/searchView.js"));
 
 var _resultView = _interopRequireDefault(require("./views/resultView.js"));
 
+var _paginationView = _interopRequireDefault(require("./views/paginationView.js"));
+
 require("babel-polyfill");
 
 require("core-js/stable");
@@ -22073,23 +22195,26 @@ var controlSearch = /*#__PURE__*/function () {
           case 7:
             // 30 render results
             // resultView.render(model.state.search.results)
-            _resultView.default.render(model.getSearchResultsPage());
+            _resultView.default.render(model.getSearchResultsPage(3)); //render initial pagination buttons
 
-            _context2.next = 13;
+
+            _paginationView.default.render(model.state.search);
+
+            _context2.next = 14;
             break;
 
-          case 10:
-            _context2.prev = 10;
+          case 11:
+            _context2.prev = 11;
             _context2.t0 = _context2["catch"](0);
 
             _resultView.default.renderError();
 
-          case 13:
+          case 14:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 10]]);
+    }, _callee2, null, [[0, 11]]);
   }));
 
   return function controlSearch() {
@@ -22097,15 +22222,34 @@ var controlSearch = /*#__PURE__*/function () {
   };
 }();
 
+var controlPagination = function controlPagination(goToPage) {
+  // resultView.render(model.state.search.results)
+  _resultView.default.render(model.getSearchResultsPage(goToPage)); //render initial pagination buttons
+
+
+  _paginationView.default.render(model.state.search);
+};
+
+var controlServings = function controlServings(newServings) {
+  // update recipe serving in the state
+  model.updateServings(newServings); //render recipe
+
+  _recipeView.default.render(model.state.recipe);
+};
+
 var init = function init() {
   _recipeView.default.addHandlerRender(controlRecipies);
 
+  _recipeView.default.addHandlerUpdateServings(controlServings);
+
   _searchView.default.addHandlerSearch(controlSearch);
+
+  _paginationView.default.addHandlerClick(controlPagination);
 };
 
 init(); // recipeView.addHandelerRender(controlRecipies)
 // window.addEventListener('hashchange', controlRecipies) //listening for hash changeevent
-},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultView.js":"src/js/views/resultView.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","core-js/stable":"node_modules/core-js/stable/index.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","../img/icons.svg":"src/img/icons.svg"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultView.js":"src/js/views/resultView.js","./views/paginationView.js":"src/js/views/paginationView.js","babel-polyfill":"node_modules/babel-polyfill/lib/index.js","core-js/stable":"node_modules/core-js/stable/index.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","../img/icons.svg":"src/img/icons.svg"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -22133,7 +22277,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61281" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54610" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
