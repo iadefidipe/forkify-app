@@ -26,6 +26,8 @@ const controlRecipies = async function () {
 
     const id = window.location.hash.slice(1); //? window.location refers to the whole url, this how you get the hash
     if (!id) return;
+    //TODO: update results view to mark selected result page
+    
 
     // TODO render spinner
     recipeView.renderSpinner();
@@ -86,13 +88,22 @@ const controlServings = function(newServings){
   model.updateServings(newServings)
 
   //render recipe
-  recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
   
+}
+
+const controlAddBookmark = function(){
+  if(!model.state.recipe.bookmarked) 
+  model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id);
+  console.log(model.state.recipe)
+  recipeView.update(model.state.recipe)
 }
 
 const init = function () {
   recipeView.addHandlerRender(controlRecipies);
   recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearch);
   paginationView.addHandlerClick(controlPagination);
   
