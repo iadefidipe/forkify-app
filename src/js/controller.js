@@ -3,6 +3,8 @@ import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultView from './views/resultView.js';
 import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
+
 
 import 'babel-polyfill';
 import 'core-js/stable';
@@ -27,6 +29,10 @@ const controlRecipies = async function () {
     const id = window.location.hash.slice(1); //? window.location refers to the whole url, this how you get the hash
     if (!id) return;
     //TODO: update results view to mark selected result page
+    resultView.update(model.getSearchResultsPage())
+    bookmarksView.update(model.state.bookmarks)
+
+
     
 
     // TODO render spinner
@@ -45,6 +51,7 @@ const controlRecipies = async function () {
     //error
     // alert(err);
     recipeView.renderError();
+    console.error(err)
   }
 };
 
@@ -63,7 +70,7 @@ const controlSearch = async function () {
     // 30 render results
 
     // resultView.render(model.state.search.results)
-    resultView.render(model.getSearchResultsPage(3))
+    resultView.render(model.getSearchResultsPage())
 
     //render initial pagination buttons
     paginationView.render(model.state.search);
@@ -93,14 +100,24 @@ const controlServings = function(newServings){
 }
 
 const controlAddBookmark = function(){
+  //Add or remove bookmarks
   if(!model.state.recipe.bookmarked) 
   model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
-  console.log(model.state.recipe)
+
+  //update recipe view
   recipeView.update(model.state.recipe)
+
+  // render bookmarks
+  bookmarksView.render(model.state.bookmarks)
+}
+
+const controlBookmarks = function(){
+  bookmarksView.render(model.state.bookmarks)
 }
 
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks)
   recipeView.addHandlerRender(controlRecipies);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
